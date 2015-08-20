@@ -9,10 +9,11 @@
 
         var settings = $.extend( {}, defaults, options );
         var el = this;
+        var id = el.attr("id");
         el.empty();
-        el.append("<table id='dataTable"+count+"'></table>");
-        console.log(data);
-        generaDataTable(data, 'dataTable'+count, settings)
+        el.append("<table id='dataTable"+id+"' class='table table-hover table-bordered table-condensed'></table>");
+        // console.log(data);
+        generaDataTable(data, 'dataTable'+id, settings)
 
         count++;
         return el;
@@ -22,7 +23,7 @@
     var generaDataTable = function(data, id, settings)
     {
 		table                             = $("#"+id);
-		dataTable[id]                     = data;
+		dataTable[id]                     = jQuery.extend(true, {}, data);
 		dataTable[id].settings            = settings;
 		dataTable[id].cabecerasExpandidas = [];
 		dataTable[id].filasExpandidas     = [];
@@ -31,6 +32,7 @@
 		dataTable[id].filasShow           = getInitialShow(dataTable[id].filas, dataTable[id].dimensiones.filas.length);
         table.empty();
         drawTable(id, table);
+        // console.log(id, dataTable);
     }
 
 
@@ -59,34 +61,34 @@
     var drawTable = function(div_id, tabla_jquery)
     {
 
-		var html = '<table id="containerTabla" class="table table-hover table-bordered table-condensed"><thead>';
+		var html = '<thead>';
 		var cabecera = generaCabeceras(dataTable,div_id);
 		var filas    = generaFilas(dataTable,div_id);
 
 		html += cabecera;
 		html += '</thead></tbody>';
 		html += filas;
-		html += '</tbody></table>';
+		html += '</tbody>';
 
 		$("#" + div_id).empty();
 		$("#" + div_id).append(html);
 
-		$('.expandirFila').on('click', function() {
+		$('.expandirFila'+div_id).on('click', function() {
 			var boton = $(this);
 			tabla_jquery = $(this).closest("table");
 			expandirFila(boton.data( "indexFila" ),div_id,tabla_jquery);
 		});
-		$('.contraerFila').on('click', function() {
+		$('.contraerFila'+div_id).on('click', function() {
 			var boton = $(this);
 			tabla_jquery = $(this).closest("table");
 			contraerFila(boton.data( "indexFila" ),div_id,tabla_jquery);
 		});
-		$('.expandirCabecera').on('click', function() {
+		$('.expandirCabecera'+div_id).on('click', function() {
 			var boton = $(this);
 			tabla_jquery = $(this).closest("table");
 			expandirCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
 		});
-		$('.contraerCabecera').on('click', function() {
+		$('.contraerCabecera'+div_id).on('click', function() {
 			var boton = $(this);
 			tabla_jquery = $(this).closest("table");
 			contraerCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
@@ -124,7 +126,7 @@
             var boton  = '';
             if (i + 1 < max_row && nombre != '')
             {
-              boton    = '<span class="expandirCabecera glyphicon glyphicon-plus green" data-index-cabecera="'+indice+'" aria-hidden="true"></span>&nbsp;';
+              boton    = '<span class="expandirCabecera'+div_id+' glyphicon glyphicon-plus green" data-index-cabecera="'+indice+'" aria-hidden="true"></span>&nbsp;';
             }
             cabeceras += nombre == '*' ? '' : '<th nowrap colspan="'+colspan+'" rowspan="'+rowspan+'">'+boton+nombre+'</th>';
             nombre     = cabecera[i];
@@ -135,7 +137,7 @@
 
           if (rowspan > 1)
           {
-            boton      = '<span class="contraerCabecera glyphicon glyphicon-minus red" data-index-cabecera="'+index+'" aria-hidden="true"></span>&nbsp;'
+            boton      = '<span class="contraerCabecera'+div_id+' glyphicon glyphicon-minus red" data-index-cabecera="'+index+'" aria-hidden="true"></span>&nbsp;'
             colspan   -= 1;
             cabeceras += '<th nowrap colspan="'+colspan+'">'+boton+nombre+'</th>';
             cabeceras += '<th nowrap rowspan="'+rowspan+'">Total '+nombre+'</th>';
@@ -189,7 +191,7 @@
       $.each(datos[div_id].filasShow, function(key, indexFila)
       {
         var fila = datos[div_id].filas[indexFila];
-        var nombre_fila = getNombreFila(fila, indexFila, datos[div_id].filasExpandidas);
+        var nombre_fila = getNombreFila(fila, indexFila, datos[div_id].filasExpandidas, div_id);
 
         if(datos[div_id].filasExpandidas.indexOf(indexFila) == -1)
         {
@@ -240,7 +242,7 @@
 
 
 
-    var getNombreFila = function(fila, indexFila, expandidas)
+    var getNombreFila = function(fila, indexFila, expandidas, div_id)
     {
       var nombre = 'Total General';
       var tab    = -1;
@@ -259,9 +261,9 @@
       if (tab < fila.length - 1 && nombre != 'Total General')
       {
         if (expandidas.indexOf(parseInt(indexFila)) == -1) {
-          boton = '<span class="expandirFila glyphicon glyphicon-plus green" data-index-fila="'+indexFila+'" aria-hidden="true"></span>&nbsp;';
+          boton = '<span class="expandirFila'+div_id+' glyphicon glyphicon-plus green" data-index-fila="'+indexFila+'" aria-hidden="true"></span>&nbsp;';
         } else {
-          boton = '<span class="contraerFila glyphicon glyphicon-minus red" data-index-fila="'+indexFila+'" aria-hidden="true"></span>&nbsp;';
+          boton = '<span class="contraerFila'+div_id+' glyphicon glyphicon-minus red" data-index-fila="'+indexFila+'" aria-hidden="true"></span>&nbsp;';
         }
       }
 
