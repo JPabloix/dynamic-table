@@ -1,17 +1,19 @@
 <html>
 <head>
-	<title>demo dynamic-table</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	<script src="data.js"></script>
-	<script src="dynamic-table.js"></script>
+    <title>demo dynamic-table</title>
+    <link rel="stylesheet" href="dynamic-table.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="data.js"></script>
+    <script src="dynamic-table.js"></script>
 </head>
 <body>
-	<div id="dynamic-table"></div>
-	<div id="dynamic-table2"></div>
-	<script type="text/javascript">
-	// console.log(data);
-		$("#dynamic-table").dynamicTable(data);
-		$("#dynamic-table2").dynamicTable(data);
-	</script>
+    <div id="dynamic-table"></div>
+    <div id="dynamic-table2"></div>
+    <script type="text/javascript">
+        $("#dynamic-table").dynamicTable(data, {
+            fullTotalName : "Total!!!"
+        });
+        // $("#dynamic-table2").dynamicTable(data);
+    </script>
 </body>
 </html>

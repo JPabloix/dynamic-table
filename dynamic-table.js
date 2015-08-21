@@ -1,38 +1,41 @@
 (function( $ ) {
     var dataTable  = {};
-    var count = 1;
 
     $.fn.dynamicTable = function(data, options) {
 
         var defaults = {
+            totalName         : 'Total',
+            fullTotalName     : 'Total General',
+            classTable        : 'table table-hover table-bordered table-condensed',
+            classRowFullTotal : 'row-full-total',
+            classRowTotal     : 'row-total',
+            classTr           : '',
+            elementExpand     : '<div class ="cross" aria-hidden="true"></div>',
+            elementContract   : '<div class ="minus" aria-hidden="true"></div>'
         };
 
         var settings = $.extend( {}, defaults, options );
-        var el = this;
-        var id = el.attr("id");
+        var el       = this;
+        var id       = el.attr("id");
         el.empty();
-        el.append("<table id='dataTable"+id+"' class='table table-hover table-bordered table-condensed'></table>");
-        // console.log(data);
-        generaDataTable(data, 'dataTable'+id, settings)
-
-        count++;
+        el.append("<table id='dataTable"+id+"' class='"+settings.classTable+"'></table>");
+        generateDataTable(data, 'dataTable'+id, settings)
         return el;
     };
 
 
-    var generaDataTable = function(data, id, settings)
+    var generateDataTable = function(data, id, settings)
     {
-		table                             = $("#"+id);
-		dataTable[id]                     = jQuery.extend(true, {}, data);
-		dataTable[id].settings            = settings;
-		dataTable[id].cabecerasExpandidas = [];
-		dataTable[id].filasExpandidas     = [];
+        table                             = $("#"+id);
+        dataTable[id]                     = jQuery.extend(true, {}, data);
+        dataTable[id].settings            = settings;
+        dataTable[id].cabecerasExpandidas = [];
+        dataTable[id].filasExpandidas     = [];
 
-		dataTable[id].cabecerasShow       = getInitialShow(dataTable[id].cabeceras, dataTable[id].dimensiones.cabeceras.length);
-		dataTable[id].filasShow           = getInitialShow(dataTable[id].filas, dataTable[id].dimensiones.filas.length);
+        dataTable[id].cabecerasShow       = getInitialShow(dataTable[id].cabeceras, dataTable[id].dimensiones.cabeceras.length);
+        dataTable[id].filasShow           = getInitialShow(dataTable[id].filas, dataTable[id].dimensiones.filas.length);
         table.empty();
         drawTable(id, table);
-        // console.log(id, dataTable);
     }
 
 
@@ -61,38 +64,38 @@
     var drawTable = function(div_id, tabla_jquery)
     {
 
-		var html = '<thead>';
-		var cabecera = generaCabeceras(dataTable,div_id);
-		var filas    = generaFilas(dataTable,div_id);
+        var html = '<thead>';
+        var cabecera = generaCabeceras(dataTable,div_id);
+        var filas    = generaFilas(dataTable,div_id);
 
-		html += cabecera;
-		html += '</thead></tbody>';
-		html += filas;
-		html += '</tbody>';
+        html += cabecera;
+        html += '</thead></tbody>';
+        html += filas;
+        html += '</tbody>';
 
-		$("#" + div_id).empty();
-		$("#" + div_id).append(html);
+        $("#" + div_id).empty();
+        $("#" + div_id).append(html);
 
-		$('.expandirFila'+div_id).on('click', function() {
-			var boton = $(this);
-			tabla_jquery = $(this).closest("table");
-			expandirFila(boton.data( "indexFila" ),div_id,tabla_jquery);
-		});
-		$('.contraerFila'+div_id).on('click', function() {
-			var boton = $(this);
-			tabla_jquery = $(this).closest("table");
-			contraerFila(boton.data( "indexFila" ),div_id,tabla_jquery);
-		});
-		$('.expandirCabecera'+div_id).on('click', function() {
-			var boton = $(this);
-			tabla_jquery = $(this).closest("table");
-			expandirCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
-		});
-		$('.contraerCabecera'+div_id).on('click', function() {
-			var boton = $(this);
-			tabla_jquery = $(this).closest("table");
-			contraerCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
-		});
+        $('.expandirFila'+div_id).on('click', function() {
+            var boton = $(this);
+            tabla_jquery = $(this).closest("table");
+            expandirFila(boton.data( "indexFila" ),div_id,tabla_jquery);
+        });
+        $('.contraerFila'+div_id).on('click', function() {
+            var boton = $(this);
+            tabla_jquery = $(this).closest("table");
+            contraerFila(boton.data( "indexFila" ),div_id,tabla_jquery);
+        });
+        $('.expandirCabecera'+div_id).on('click', function() {
+            var boton = $(this);
+            tabla_jquery = $(this).closest("table");
+            expandirCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
+        });
+        $('.contraerCabecera'+div_id).on('click', function() {
+            var boton = $(this);
+            tabla_jquery = $(this).closest("table");
+            contraerCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
+        });
     }
 
 
@@ -123,12 +126,12 @@
           {
             nombre     = nombre == '' && i > 0 ? '*' : nombre;
             rowspan    = nombre == '' ? max_row : getRowSpan(cabeceraAnterior, max_row, i);
-            var boton  = '';
+            var boton  = nombre;
             if (i + 1 < max_row && nombre != '')
             {
-              boton    = '<span class="expandirCabecera'+div_id+' glyphicon glyphicon-plus green" data-index-cabecera="'+indice+'" aria-hidden="true"></span>&nbsp;';
+                boton    = '<div class="expandirCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+datos[div_id].settings.elementExpand+'&nbsp;'+nombre+'</div>';
             }
-            cabeceras += nombre == '*' ? '' : '<th nowrap colspan="'+colspan+'" rowspan="'+rowspan+'">'+boton+nombre+'</th>';
+            cabeceras += nombre == '*' ? '' : '<th nowrap colspan="'+colspan+'" rowspan="'+rowspan+'">'+boton+'</th>';
             nombre     = cabecera[i];
             colspan    = 1;
             rowspan    = 1;
@@ -137,10 +140,10 @@
 
           if (rowspan > 1)
           {
-            boton      = '<span class="contraerCabecera'+div_id+' glyphicon glyphicon-minus red" data-index-cabecera="'+index+'" aria-hidden="true"></span>&nbsp;'
+            boton      = '<div class="contraerCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+datos[div_id].settings.elementContract+'&nbsp;'+nombre+'</div>';
             colspan   -= 1;
-            cabeceras += '<th nowrap colspan="'+colspan+'">'+boton+nombre+'</th>';
-            cabeceras += '<th nowrap rowspan="'+rowspan+'">Total '+nombre+'</th>';
+            cabeceras += '<th nowrap colspan="'+colspan+'">'+boton+'</th>';
+            cabeceras += '<th nowrap rowspan="'+rowspan+'">'+datos[div_id].settings.totalName+' '+nombre+'</th>';
             nombre     = '*';
             colspan    = 1;
             rowspan    = 1;
@@ -151,7 +154,7 @@
 
         if (i == 0)
         {
-          cabeceras += '<th rowspan="'+max_row+'">Total General</th>';
+          cabeceras += '<th rowspan="'+max_row+'">'+datos[div_id].settings.fullTotalName+'</th>';
         }
         nombre     = '';
         colspan    = 1;
@@ -186,24 +189,24 @@
 
     var generaFilas = function(datos,div_id)
     {
-      row = '<tr>';
-
+      row = '';
       $.each(datos[div_id].filasShow, function(key, indexFila)
       {
+        row += '<tr class="'+datos[div_id].settings.classTr+'">';
         var fila = datos[div_id].filas[indexFila];
-        var nombre_fila = getNombreFila(fila, indexFila, datos[div_id].filasExpandidas, div_id);
+        var nombre_fila = getNombreFila(fila, indexFila, datos[div_id].filasExpandidas, div_id, datos);
 
         if(datos[div_id].filasExpandidas.indexOf(indexFila) == -1)
         {
-          if(nombre_fila == "Total General")
+          if(nombre_fila == datos[div_id].settings.fullTotalName)
           {
-            row += '<td nowrap style="background-color:#5cb85c;color:white;">'+nombre_fila+'</td>';
+            row += '<td nowrap class="'+datos[div_id].settings.classRowFullTotal+'">'+nombre_fila+'</td>';
           }else{
             row += '<td nowrap><b>'+nombre_fila+'</b></td>';
           }
 
         }else{
-          row += '<td nowrap style="background-color:#FFFFC3;"><b>'+nombre_fila+'</b></td>';
+          row += '<td nowrap class="'+datos[div_id].settings.classRowTotal+'"><b>'+nombre_fila+'</b></td>';
         }
 
 
@@ -222,15 +225,15 @@
 
           if(datos[div_id].filasExpandidas.indexOf(indexFila) == -1)
           {
-            if(nombre_fila == "Total General")
+            if(nombre_fila == datos[div_id].settings.fullTotalName)
             {
-              row += '<td style="background-color:#5cb85c;color:white;">'+valor_string+'</td>';
+              row += '<td class="'+datos[div_id].settings.classRowFullTotal+'">'+valor_string+'</td>';
             }else{
               row += '<td>'+valor_string+'</td>';
             }
 
           }else{
-            row += '<td style="background-color:#FFFFC3;">'+valor_string+'</td>';
+            row += '<td class="'+datos[div_id].settings.classRowTotal+'">'+valor_string+'</td>';
           }
         });
 
@@ -242,9 +245,9 @@
 
 
 
-    var getNombreFila = function(fila, indexFila, expandidas, div_id)
+    var getNombreFila = function(fila, indexFila, expandidas, div_id, datos)
     {
-      var nombre = 'Total General';
+      var nombre = datos[div_id].settings.fullTotalName;
       var tab    = -1;
 
       $.each(fila, function(key, value) {
@@ -256,14 +259,14 @@
 
       tab = tab == -1 ? 0 : tab;
 
-      boton = '';
+      boton = nombre;
 
-      if (tab < fila.length - 1 && nombre != 'Total General')
+      if (tab < fila.length - 1 && nombre != datos[div_id].settings.fullTotalName)
       {
         if (expandidas.indexOf(parseInt(indexFila)) == -1) {
-          boton = '<span class="expandirFila'+div_id+' glyphicon glyphicon-plus green" data-index-fila="'+indexFila+'" aria-hidden="true"></span>&nbsp;';
+          boton = '<div class="expandirFila'+div_id+'"  data-index-fila="'+indexFila+'">'+datos[div_id].settings.elementExpand+''+nombre+'&nbsp;</div>';
         } else {
-          boton = '<span class="contraerFila'+div_id+' glyphicon glyphicon-minus red" data-index-fila="'+indexFila+'" aria-hidden="true"></span>&nbsp;';
+          boton = '<div class="contraerFila'+div_id+'"  data-index-fila="'+indexFila+'">'+datos[div_id].settings.elementContract+''+nombre+'&nbsp;</div>';
         }
       }
 
@@ -274,7 +277,7 @@
       }
 
 
-      return tabs + boton + nombre;
+      return tabs + boton;
     }
 
     var addComas = function (nStr)
