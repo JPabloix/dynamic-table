@@ -4,14 +4,15 @@
     $.fn.dynamicTable = function(data, options) {
 
         var defaults = {
-            totalName         : 'Total',
-            fullTotalName     : 'Total General',
-            classTable        : 'table table-hover table-bordered table-condensed',
-            classRowFullTotal : 'row-full-total',
-            classRowTotal     : 'row-total',
-            classTr           : '',
-            elementExpand     : '<div class ="cross" aria-hidden="true"></div>',
-            elementContract   : '<div class ="minus" aria-hidden="true"></div>'
+            totalName            : 'Total',
+            fullTotalName        : 'Total General',
+            classTable           : 'table table-hover table-bordered table-condensed',
+            classRowFullTotal    : 'row-full-total',
+            classRowTotal        : 'row-total',
+            classColumnFullTotal : 'row-full-total',
+            classTr              : '',
+            elementExpand        : '<div class ="cross" aria-hidden="true"></div>',
+            elementContract      : '<div class ="minus" aria-hidden="true"></div>'
         };
 
         var settings = $.extend( {}, defaults, options );
@@ -19,6 +20,7 @@
         var id       = el.attr("id");
         el.empty();
         el.append("<table id='dataTable"+id+"' class='"+settings.classTable+"'></table>");
+
         generateDataTable(data, 'dataTable'+id, settings)
         return el;
     };
@@ -75,6 +77,8 @@
 
         $("#" + div_id).empty();
         $("#" + div_id).append(html);
+
+        $('#'+div_id+' tr').each(function(){ $(this).find("td,th").last().addClass(dataTable[div_id].settings.classColumnFullTotal)});
 
         $('.expandirFila'+div_id).on('click', function() {
             var boton = $(this);
@@ -143,7 +147,7 @@
             boton      = '<div class="contraerCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+datos[div_id].settings.elementContract+'&nbsp;'+nombre+'</div>';
             colspan   -= 1;
             cabeceras += '<th nowrap colspan="'+colspan+'">'+boton+'</th>';
-            cabeceras += '<th nowrap rowspan="'+rowspan+'">'+datos[div_id].settings.totalName+' '+nombre+'</th>';
+            cabeceras += '<th nowrap rowspan="'+rowspan+'" class="totalColumn">'+datos[div_id].settings.totalName+' '+nombre+'</th>';
             nombre     = '*';
             colspan    = 1;
             rowspan    = 1;
