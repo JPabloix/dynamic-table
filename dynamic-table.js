@@ -78,7 +78,10 @@
         $("#" + div_id).empty();
         $("#" + div_id).append(html);
 
-        $('#'+div_id+' tr').each(function(){ $(this).find("td,th").last().addClass(dataTable[div_id].settings.classColumnFullTotal)});
+        $('#'+div_id+' tr').each(function(){
+          $(this).find("td").last().addClass(dataTable[div_id].settings.classColumnFullTotal);
+        });
+        $('#'+div_id+' tr').first().find("th").last().addClass(dataTable[div_id].settings.classColumnFullTotal);
 
         $('.expandirFila'+div_id).on('click', function() {
             var boton = $(this);

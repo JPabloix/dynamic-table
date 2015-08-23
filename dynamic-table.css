@@ -12,7 +12,7 @@
   background: linear-gradient(to bottom, transparent 35%, #d00 35%, #d00 65%,  transparent 65%);
 }
 .row-full-total {
-  background-color: #5cb85c;
+  background-color: #5cb85c !important;
   color: white;
 }
 .row-total {
