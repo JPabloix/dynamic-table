@@ -70,9 +70,9 @@
     {
 
         var html = '<thead>';
-        var cabecera = generaCabeceras(dataTable,div_id);
+        var cabecera = generaCabeceras(div_id);
         console.log("cabecera", cabecera);
-        var filas    = generaFilas(dataTable,div_id);
+        var filas    = generaFilas(div_id);
 
         html += cabecera;
         html += '</thead></tbody>';
@@ -111,7 +111,7 @@
 
 
 
-    var generaCabeceras = function(datos, div_id)
+    var generaCabeceras = function(div_id)
     {
 
       var cabeceras = '';
@@ -119,17 +119,17 @@
       var colspan   = 1;
       var rowspan   = 1;
       var indice    = -1;
-      var max_row   = datos[div_id].dimensiones.cabeceras.length === 0 ? 1 : datos[div_id].dimensiones.cabeceras.length;
+      var max_row   = dataTable[div_id].dimensiones.cabeceras.length === 0 ? 1 : dataTable[div_id].dimensiones.cabeceras.length;
 
       for (var i = 0; i < max_row; i++)
       {
         var boton        = '';
         cabeceraAnterior = [];
         cabeceras       += '<tr>';
-        for(var c in datos[div_id].cabecerasShow)
+        for(var c in dataTable[div_id].cabecerasShow)
         {
-          var index = datos[div_id].cabecerasShow[c];
-          cabecera = datos[div_id].cabeceras[index];
+          var index = dataTable[div_id].cabecerasShow[c];
+          cabecera = dataTable[div_id].cabeceras[index];
           if (nombre == cabecera[i] && nombre != '*')
           {
             rowspan  = getRowSpan(cabecera, max_row, i);
@@ -142,7 +142,7 @@
             boton  = nombre;
             if (i + 1 < max_row && nombre !== '')
             {
-                boton    = '<div class="expandirCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+datos[div_id].settings.elementExpand+'&nbsp;'+nombre+'</div>';
+                boton    = '<div class="expandirCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+dataTable[div_id].settings.elementExpand+'&nbsp;'+nombre+'</div>';
             }
             cabeceras += nombre == '*' ? '' : '<th nowrap colspan="'+colspan+'" rowspan="'+rowspan+'">'+boton+'</th>';
             nombre     = cabecera[i];
@@ -153,10 +153,10 @@
 
           if (rowspan > 1)
           {
-            boton      = '<div class="contraerCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+datos[div_id].settings.elementContract+'&nbsp;'+nombre+'</div>';
+            boton      = '<div class="contraerCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+dataTable[div_id].settings.elementContract+'&nbsp;'+nombre+'</div>';
             colspan   -= 1;
             cabeceras += '<th nowrap colspan="'+colspan+'">'+boton+'</th>';
-            cabeceras += '<th nowrap rowspan="'+rowspan+'" class="totalColumn">'+datos[div_id].settings.totalName+' '+nombre+'</th>';
+            cabeceras += '<th nowrap rowspan="'+rowspan+'" class="totalColumn">'+dataTable[div_id].settings.totalName+' '+nombre+'</th>';
             nombre     = '*';
             colspan    = 1;
             rowspan    = 1;
@@ -167,7 +167,7 @@
 
         if (i === 0)
         {
-          cabeceras += '<th rowspan="'+max_row+'">'+datos[div_id].settings.fullTotalName+'</th>';
+          cabeceras += '<th rowspan="'+max_row+'">'+dataTable[div_id].settings.fullTotalName+'</th>';
         }
         nombre     = '';
         colspan    = 1;
@@ -200,53 +200,53 @@
         return rowSpan;
     };
 
-    var generaFilas = function(datos,div_id)
+    var generaFilas = function(div_id)
     {
       row = '';
-      $.each(datos[div_id].filasShow, function(key, indexFila)
+      $.each(dataTable[div_id].filasShow, function(key, indexFila)
       {
-        row += '<tr class="'+datos[div_id].settings.classTr+'">';
-        var fila = datos[div_id].filas[indexFila];
-        var nombre_fila = getNombreFila(fila, indexFila, datos[div_id].filasExpandidas, div_id, datos);
+        row += '<tr class="'+dataTable[div_id].settings.classTr+'">';
+        var fila = dataTable[div_id].filas[indexFila];
+        var nombre_fila = getNombreFila(fila, indexFila, dataTable[div_id].filasExpandidas, div_id);
 
-        if(datos[div_id].filasExpandidas.indexOf(indexFila) == -1)
+        if(dataTable[div_id].filasExpandidas.indexOf(indexFila) == -1)
         {
-          if(nombre_fila == datos[div_id].settings.fullTotalName)
+          if(nombre_fila == dataTable[div_id].settings.fullTotalName)
           {
-            row += '<td nowrap class="'+datos[div_id].settings.classRowFullTotal+'">'+nombre_fila+'</td>';
+            row += '<td nowrap class="'+dataTable[div_id].settings.classRowFullTotal+'">'+nombre_fila+'</td>';
           }else{
             row += '<td nowrap><b>'+nombre_fila+'</b></td>';
           }
 
         }else{
-          row += '<td nowrap class="'+datos[div_id].settings.classRowTotal+'"><b>'+nombre_fila+'</b></td>';
+          row += '<td nowrap class="'+dataTable[div_id].settings.classRowTotal+'"><b>'+nombre_fila+'</b></td>';
         }
 
 
-        $.each(datos[div_id].cabecerasShow, function(key, indexColumna)
+        $.each(dataTable[div_id].cabecerasShow, function(key, indexColumna)
         {
           var valor = '';
-          if (typeof datos[div_id].tabla[indexFila] != 'undefined')
+          if (typeof dataTable[div_id].tabla[indexFila] != 'undefined')
           {
-            if (typeof datos[div_id].tabla[indexFila][indexColumna] != 'undefined')
+            if (typeof dataTable[div_id].tabla[indexFila][indexColumna] != 'undefined')
             {
-              valor = datos[div_id].tabla[indexFila][indexColumna];
+              valor = dataTable[div_id].tabla[indexFila][indexColumna];
             }
           }
 
           var valor_string = addComas(valor);
 
-          if(datos[div_id].filasExpandidas.indexOf(indexFila) == -1)
+          if(dataTable[div_id].filasExpandidas.indexOf(indexFila) == -1)
           {
-            if(nombre_fila == datos[div_id].settings.fullTotalName)
+            if(nombre_fila == dataTable[div_id].settings.fullTotalName)
             {
-              row += '<td class="'+datos[div_id].settings.classRowFullTotal+'">'+valor_string+'</td>';
+              row += '<td class="'+dataTable[div_id].settings.classRowFullTotal+'">'+valor_string+'</td>';
             }else{
               row += '<td>'+valor_string+'</td>';
             }
 
           }else{
-            row += '<td class="'+datos[div_id].settings.classRowTotal+'">'+valor_string+'</td>';
+            row += '<td class="'+dataTable[div_id].settings.classRowTotal+'">'+valor_string+'</td>';
           }
         });
 
@@ -258,9 +258,9 @@
 
 
 
-    var getNombreFila = function(fila, indexFila, expandidas, div_id, datos)
+    var getNombreFila = function(fila, indexFila, expandidas, div_id)
     {
-      var nombre = datos[div_id].settings.fullTotalName;
+      var nombre = dataTable[div_id].settings.fullTotalName;
       var tab    = -1;
 
       $.each(fila, function(key, value) {
@@ -274,12 +274,12 @@
 
       boton = nombre;
 
-      if (tab < fila.length - 1 && nombre != datos[div_id].settings.fullTotalName)
+      if (tab < fila.length - 1 && nombre != dataTable[div_id].settings.fullTotalName)
       {
         if (expandidas.indexOf(parseInt(indexFila)) == -1) {
-          boton = '<div class="expandirFila'+div_id+'"  data-index-fila="'+indexFila+'">'+datos[div_id].settings.elementExpand+''+nombre+'&nbsp;</div>';
+          boton = '<div class="expandirFila'+div_id+'"  data-index-fila="'+indexFila+'">'+dataTable[div_id].settings.elementExpand+''+nombre+'&nbsp;</div>';
         } else {
-          boton = '<div class="contraerFila'+div_id+'"  data-index-fila="'+indexFila+'">'+datos[div_id].settings.elementContract+''+nombre+'&nbsp;</div>';
+          boton = '<div class="contraerFila'+div_id+'"  data-index-fila="'+indexFila+'">'+dataTable[div_id].settings.elementContract+''+nombre+'&nbsp;</div>';
         }
       }
 
