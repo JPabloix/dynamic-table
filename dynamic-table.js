@@ -9,7 +9,7 @@
         el.empty();
         el.append("<table id='dataTable"+id+"' class='"+settings.classTable+"'></table>");
 
-        generateDataTable(data, 'dataTable'+id, settings)
+        generateDataTable(data, 'dataTable'+id, settings);
         return el;
     };
 
@@ -38,19 +38,17 @@
         dataTable[id].settings            = settings;
         dataTable[id].cabecerasExpandidas = [];
         dataTable[id].filasExpandidas     = [];
-
         dataTable[id].cabecerasShow       = getInitialShow(dataTable[id].cabeceras, dataTable[id].dimensiones.cabeceras.length);
         dataTable[id].filasShow           = getInitialShow(dataTable[id].filas, dataTable[id].dimensiones.filas.length);
         table.empty();
         drawTable(id, table);
-    }
+    };
 
 
     var getInitialShow = function (data, niveles)
     {
-
       var valores = [];
-      if (niveles == 1 || niveles == 0) {
+      if (niveles === 1 || niveles === 0) {
         valores = $.map(data, function(value, key) {
           return key;
         });
@@ -64,7 +62,7 @@
         });
       }
       return valores;
-    }
+    };
 
 
 
@@ -73,6 +71,7 @@
 
         var html = '<thead>';
         var cabecera = generaCabeceras(dataTable,div_id);
+        console.log("cabecera", cabecera);
         var filas    = generaFilas(dataTable,div_id);
 
         html += cabecera;
@@ -108,7 +107,7 @@
             tabla_jquery = $(this).closest("table");
             contraerCabecera(boton.data( "indexCabecera" ),div_id,tabla_jquery);
         });
-    }
+    };
 
 
 
@@ -120,14 +119,16 @@
       var colspan   = 1;
       var rowspan   = 1;
       var indice    = -1;
-      var max_row   = datos[div_id].dimensiones.cabeceras.length == 0 ? 1 : datos[div_id].dimensiones.cabeceras.length;
+      var max_row   = datos[div_id].dimensiones.cabeceras.length === 0 ? 1 : datos[div_id].dimensiones.cabeceras.length;
 
       for (var i = 0; i < max_row; i++)
       {
+        var boton        = '';
         cabeceraAnterior = [];
-        cabeceras += '<tr>';
-        $.each(datos[div_id].cabecerasShow, function(key, index)
+        cabeceras       += '<tr>';
+        for(var c in datos[div_id].cabecerasShow)
         {
+          var index = datos[div_id].cabecerasShow[c];
           cabecera = datos[div_id].cabeceras[index];
           if (nombre == cabecera[i] && nombre != '*')
           {
@@ -136,10 +137,10 @@
             indice   = index;
           } else
           {
-            nombre     = nombre == '' && i > 0 ? '*' : nombre;
-            rowspan    = nombre == '' ? max_row : getRowSpan(cabeceraAnterior, max_row, i);
-            var boton  = nombre;
-            if (i + 1 < max_row && nombre != '')
+            nombre     = nombre === '' && i > 0 ? '*' : nombre;
+            rowspan    = nombre === '' ? max_row : getRowSpan(cabeceraAnterior, max_row, i);
+            boton  = nombre;
+            if (i + 1 < max_row && nombre !== '')
             {
                 boton    = '<div class="expandirCabecera'+div_id+'" data-index-cabecera="'+indice+'">'+datos[div_id].settings.elementExpand+'&nbsp;'+nombre+'</div>';
             }
@@ -161,10 +162,10 @@
             rowspan    = 1;
           }
           cabeceraAnterior = cabecera;
-        });
+        }
 
 
-        if (i == 0)
+        if (i === 0)
         {
           cabeceras += '<th rowspan="'+max_row+'">'+datos[div_id].settings.fullTotalName+'</th>';
         }
@@ -175,7 +176,7 @@
       }
 
       return cabeceras;
-    }
+    };
 
     var getRowSpan = function(cabecera, max_row, row)
     {
@@ -197,7 +198,7 @@
           }
         }
         return rowSpan;
-    }
+    };
 
     var generaFilas = function(datos,div_id)
     {
@@ -253,7 +254,7 @@
       });
 
       return row;
-    }
+    };
 
 
 
@@ -290,7 +291,7 @@
 
 
       return tabs + boton;
-    }
+    };
 
     var addComas = function (nStr)
     {
@@ -303,7 +304,7 @@
           x1 = x1.replace(rgx, '$1' + ',' + '$2');
         }
         return x1 + x2;
-    }
+    };
 
 
     var mismaAscendencia = function(elementos1, elementos2)
@@ -315,7 +316,7 @@
         }
       });
       return iguales;
-    }
+    };
 
     var mostrarElemento = function(elementos1, elementos2)
     {
@@ -329,7 +330,7 @@
       }
 
       return false;
-    }
+    };
 
     var expandir = function(data, index, seleccionados)
     {
@@ -356,23 +357,23 @@
 
       });
 
-      seleccionados.sort(function(a, b){return a-b});
+      seleccionados.sort(function(a, b){return a-b;});
 
       return seleccionados;
-    }
+    };
 
     var expandirCabecera = function(indexCabecera,div_id,tabla_jquery)
     {
       dataTable[div_id].cabecerasShow = expandir(dataTable[div_id].cabeceras, indexCabecera, dataTable[div_id].cabecerasShow);
       drawTable(div_id,tabla_jquery);
-    }
+    };
 
     var expandirFila = function (indexFila,div_id,tabla_jquery)
     {
       dataTable[div_id].filasShow = expandir(dataTable[div_id].filas, indexFila, dataTable[div_id].filasShow);
       dataTable[div_id].filasExpandidas.push(parseInt(indexFila));
       drawTable(div_id,tabla_jquery);
-    }
+    };
 
     var contraer = function(data, index, seleccionados, fila,div_id)
     {
@@ -401,7 +402,7 @@
         }
       });
 
-      seleccionados.sort(function(a, b){return a-b});
+      seleccionados.sort(function(a, b){return a-b;});
 
       $.each(indexEliminados, function(key, value)
       {
@@ -413,13 +414,13 @@
       });
 
       return seleccionados;
-    }
+    };
 
     var contraerCabecera = function(indexCabecera,div_id,tabla_jquery)
     {
       dataTable[div_id].cabecerasShow = contraer(dataTable[div_id].cabeceras, indexCabecera, dataTable[div_id].cabecerasShow, false,div_id);
       drawTable(div_id,tabla_jquery);
-    }
+    };
 
     var contraerFilaAnidadas = function(indexFila,div_id)
     {
@@ -431,15 +432,15 @@
       {
         dataTable[div_id].filasExpandidas.splice(index, 1);
       }
-      dataTable[div_id].filasShow.sort(function(a, b){return a-b});
+      dataTable[div_id].filasShow.sort(function(a, b){return a-b;});
       return dataTable[div_id].filasShow;
-    }
+    };
 
     var contraerFila = function(indexFila,div_id,tabla_jquery)
     {
       contraerFilaAnidadas(indexFila,div_id);
       drawTable(div_id,tabla_jquery);
-    }
+    };
 
 
 }(jQuery));
