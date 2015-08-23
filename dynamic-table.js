@@ -1,8 +1,20 @@
 (function( $ ) {
     var dataTable  = {};
 
-    $.fn.dynamicTable = function(data, options) {
+    $.fn.dynamicTable = function(data, options)
+    {
+        var settings = getSettings(options);
+        var el       = this;
+        var id       = el.attr("id");
+        el.empty();
+        el.append("<table id='dataTable"+id+"' class='"+settings.classTable+"'></table>");
 
+        generateDataTable(data, 'dataTable'+id, settings)
+        return el;
+    };
+
+    var getSettings = function(options)
+    {
         var defaults = {
             totalName            : 'Total',
             fullTotalName        : 'Total General',
@@ -15,14 +27,7 @@
             elementContract      : '<div class ="minus" aria-hidden="true"></div>'
         };
 
-        var settings = $.extend( {}, defaults, options );
-        var el       = this;
-        var id       = el.attr("id");
-        el.empty();
-        el.append("<table id='dataTable"+id+"' class='"+settings.classTable+"'></table>");
-
-        generateDataTable(data, 'dataTable'+id, settings)
-        return el;
+        return $.extend( {}, defaults, options );
     };
 
 
